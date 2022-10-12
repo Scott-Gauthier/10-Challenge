@@ -1,19 +1,19 @@
-import Employee from './lib/Employee.js';
-import Engineer from './lib/Engineer.js';
-import Intern from './lib/Intern.js';
-import Manager from './lib/Manager.js';
-import inquirer from 'inquirer';
-import generateHTML from './utils/generateHTML.js';
+const Engineer = require('./lib/Engineer.js');
+const Intern = require('./lib/Intern.js');
+const Manager = require('./lib/Manager.js');
+const inquirer = require('inquirer');
+const generateHTML = require('./utils/generateHTML.js');
 
-const parameter = [];
+//Final array of data from questions used to pass to generateHTML and create files.
+const employeeDataForHTML = [];
 
-// TODO: Create an array of questions for user input
+//Arrays of questions for user input
 const countprompt = [
     {
         type: 'input',
         message: 'How many team members do you have?',
         name: 'count',
-        default: "1",
+        default: "3",
     },
 ];
 
@@ -105,33 +105,13 @@ function roleAsk (count) {
             }
             );
         } else {
-        generateHTML(parameter);
+        generateHTML(employeeDataForHTML);
         }
 }
 function employeeAsk (count, employee) {
-        //if (count > 0 ) {
             count--;
-            employeeQuestions(employee);
-            const employeeprompt = [
-                {
-                    type: 'input',
-                    message: `What is your ${employee}'s name?`,
-                    name: 'employee_name',
-                    default: "Jared",
-                },
-                {
-                    type: 'input',
-                    message: `What is your ${employee}'s ID?`,
-                    name: 'employee_ID',
-                    default: "1",
-                },
-                {
-                    type: 'input',
-                    message: `What is your ${employee}'s email address?`,
-                    name: 'email_address',
-                    default: "test@test.com",
-                },
-            ];
+            //Store employee questions with the additional question that changes depending on employee selected.
+            const employeeprompt = employeeQuestions(employee);
             switch (employee) {
                 case 'Manager':
                     employeeprompt.splice(3,0,managerprompt);
@@ -143,45 +123,38 @@ function employeeAsk (count, employee) {
                     employeeprompt.splice(3,0,internprompt);
                 break;
             }
+
+            // Ask question array created above
             inquirer
             .prompt(employeeprompt)
             .then((employeeanswer) => {
-                //let employee_name = employeeanswer.employee_name;
-                // let employee_ID = ;
-                // let email_address = ;
-                // let officenumber = ;
-                // let github = ;
-                // let school = ;
                 employeeprompt.splice(3,1,);
-        
+                
+                // Process question response in Classes and then add data to global array that goes to generateHTML to create the final product.
                 switch (employee) {
                     case 'Manager':
                         const manager = new Manager(employee, employeeanswer.employee_name, employeeanswer.employee_ID, employeeanswer.email_address, employeeanswer.managers_office_number);
-                        parameter.push(manager);
+                        employeeDataForHTML.push(manager);
                     break;
                     case 'Engineer':
                         const engineer = new Engineer(employee, employeeanswer.employee_name, employeeanswer.employee_ID, employeeanswer.email_address, employeeanswer.engineer_github);
-                        parameter.push(engineer);
+                        employeeDataForHTML.push(engineer);
                     break;
                     case 'Intern':
                         const intern = new Intern(employee, employeeanswer.employee_name, employeeanswer.employee_ID, employeeanswer.email_address, employeeanswer.interns_school);
-                        parameter.push(intern);
+                        employeeDataForHTML.push(intern);
                     break;
                 }
-                // console.table(parameter)
-                //dynamicHTMLBody(manager);
-
+                // Run process again until count = 0
                 roleAsk (count);           
 
             })
+            // Process any errors.
             .catch((err) => {
-                err ? console.log(err) : console.log('Success!') 
+                err ? console.log(err) : console.log('Sigh! Well darn.') 
             }
-            );
-        // } else {
-        // console.log("Fail!");
-
-        // }
-    
+            );    
 };
+
+// Start the whole process.
 countAsk();

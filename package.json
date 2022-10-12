@@ -1,15 +1,17 @@
 {
+  "dependencies": {
+    "inquirer": "8.2.4",
+    "jest": "^29.0.1"
+  },
   "name": "team_info",
   "version": "1.0.0",
   "description": "Generate webpage that displays teams's basic info",
   "main": "index.js",
-  "type": "module",
   "directories": {
-    "lib": "lib",
-    "test": "tests"
+    "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Scott_Gauthier",
   "license": "ISC",
@@ -20,8 +22,5 @@
   "bugs": {
     "url": "https://github.com/Scott-Gauthier/10-Challenge/issues"
   },
-  "homepage": "https://github.com/Scott-Gauthier/10-Challenge#readme",
-  "dependencies": {
-    "inquirer": "8.2.4"
-  }
+  "homepage": "https://github.com/Scott-Gauthier/10-Challenge#readme"
 }

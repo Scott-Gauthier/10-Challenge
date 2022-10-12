@@ -1,5 +1,7 @@
-import fs from 'fs';
+// Used to make fs functionality work
+const fs = require('fs');
 
+// Constant static part of the HTML DOM Head information.
 const staticHTMLHead = `
 <!DOCTYPE html>
   <html lang="en">
@@ -15,6 +17,7 @@ const staticHTMLHead = `
   <body>
 `;
 
+// Constant static part of the HTML DOM Header information.
 const staticHTMLHeader = `
 <header>
 <div class="container-fluid p-3 text-bg-danger text-center">
@@ -25,18 +28,24 @@ const staticHTMLHeader = `
 </header>
 `;
 
+// Constant static part of the HTML DOM Body information.
 const staticHTMLBody = `
 <main class="container-fluid" id="employeecard">
 `;
 
-const dynamicHTMLBody = [];
+// Dynamic cards in the HTML DOM Body.
 function dynamicHTMLBodyFunction(data) {
 
-  console.table(data);
+  // Store completed cards to be combined with static portion of HTML DOM
+  const dynamicHTMLBody = [];
+
+    //loop to create ? number of cards
     for (let i=0; i < data.length; i++) {
       let cardDynamicElementText =  '';
       let cardDynamicElementIcon =  '';
         function cardDynamicFunction() {
+
+          // add on additional part of card that changes depending on which type of employee is selected.
           switch (data[i].role) {
             case 'Manager':
               cardDynamicElementText = `Office number: ${data[i].office_number}`;
@@ -53,6 +62,8 @@ function dynamicHTMLBodyFunction(data) {
           };
         };
         cardDynamicFunction();
+        
+        // Main portion that has minimal change among the different classes of employees.
         const cardElement = `
           <div class="p-3 text-center">
               <div class="card text-start">
@@ -71,8 +82,10 @@ function dynamicHTMLBodyFunction(data) {
           `
         dynamicHTMLBody.push(cardElement);
     }
+    return dynamicHTMLBody;
 }
 
+// Constant static part of the HTML DOM that ends the HTML.
 const staticHTMLEnd = `
 </main>
 <script src="./js/script.js"></script>
@@ -80,19 +93,23 @@ const staticHTMLEnd = `
 </html>
 `;
 
-// Function to generate HTML
-export default function generateHTML(parameter){
-  dynamicHTMLBodyFunction(parameter);
+// Function to generate HTML and combine static and dynamic portions above.
+function generateHTML(data){
+  //dynamicHTMLBodyFunction(parameter);
   const renderedHTML = 
-  `${staticHTMLHead}${staticHTMLHeader}${staticHTMLBody} ${dynamicHTMLBody.join('')} ${staticHTMLEnd}` //
+  `${staticHTMLHead}${staticHTMLHeader}${staticHTMLBody} ${dynamicHTMLBodyFunction(data).join('')} ${staticHTMLEnd}` //
   
+  //pass to function that will be the end of the process.
   writeToFile(renderedHTML);
 };
 
-  // TODO: Create a function to write README file
+  //Writes the HTML file.
 function writeToFile(renderedHTML) {
       const filename = `./files_created/teamHTML.html`;
       fs.writeFile(filename, renderedHTML, (err) =>
       err ? console.log(err) : console.log('Success!')
       );
     };
+
+//Needed to work with index.js page.
+module.exports = generateHTML;
